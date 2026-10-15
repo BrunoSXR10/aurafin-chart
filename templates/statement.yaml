@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: statement-service
+  labels:
+    app: statement-service
+spec:
+  replicas: {{ .Values.statement.replicaCount }}
+  selector:
+    matchLabels:
+      app: statement-service
+  template:
+    metadata:
+      labels:
+        app: statement-service
+    spec:
+      containers:
+      - name: statement-service
+        image: "{{ .Values.statement.image.repository }}:{{ .Values.statement.image.tag }}"
+        imagePullPolicy: {{ .Values.statement.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.statement.containerPort }}
+        resources:
+          requests:
+            cpu: {{ .Values.statement.resources.requests.cpu }}
+            memory: {{ .Values.statement.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.statement.resources.limits.cpu }}
+            memory: {{ .Values.statement.resources.limits.memory }}
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: {{ .Values.statement.containerPort }}
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.statement.containerPort }}
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        env:
+        - name: PORT
+          value: "{{ .Values.statement.containerPort }}"
+        - name: DB_HOST
+          value: "postgres-postgresql"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: POSTGRES_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: POSTGRES_PASSWORD
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: POSTGRES_DB
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: statement-service
+spec:
+  selector:
+    app: statement-service
+  ports:
+  - port: {{ .Values.statement.service.port }}
+    targetPort: {{ .Values.statement.containerPort }}

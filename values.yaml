@@ -1,0 +1,102 @@
+# =======================================================
+# 1. POSTGRESQL (Bitnami Subchart)
+# =======================================================
+postgresql:
+  fullnameOverride: "postgres-postgresql"
+  auth:
+    username: "aura-adm"
+    database: "finance"
+    existingSecret: "db-secret"
+    secretKeys:
+      adminPasswordKey: "POSTGRES_PASSWORD"
+      userPasswordKey: "POSTGRES_PASSWORD"
+  primary:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "128Mi"
+      limits:
+        cpu: "250m"
+        memory: "256Mi"
+    persistence:
+      enabled: true
+      storageClass: "gp2"
+      size: "2Gi"
+    podSecurityContext:
+      fsGroup: 1001
+    containerSecurityContext:
+      runAsUser: 1001
+      runAsNonRoot: true
+    extendedConfiguration: |
+      shared_buffers = 32MB
+      work_mem = 4MB
+      max_connections = 30
+
+# =======================================================
+# 2. DATABASE SECRET CONFIGURATION
+# =======================================================
+dbSecret:
+  create: false
+  username: "aura-adm"
+  database: "finance"
+  # password: 
+
+# =======================================================
+# 3. WALLET SERVICE
+# =======================================================
+wallet:
+  replicaCount: 1
+  image:
+    repository: 227703472492.dkr.ecr.us-east-1.amazonaws.com/wallet-api
+    tag: latest
+    pullPolicy: Always
+  containerPort: 8080
+  service:
+    port: 8081
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "250m"
+      memory: "256Mi"
+
+# =======================================================
+# 4. STATEMENT SERVICE
+# =======================================================
+statement:
+  replicaCount: 1
+  image:
+    repository: 227703472492.dkr.ecr.us-east-1.amazonaws.com/statement-api
+    tag: latest
+    pullPolicy: Always
+  containerPort: 8080
+  service:
+    port: 8080
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "250m"
+      memory: "256Mi"
+
+# =======================================================
+# 5. FRONTEND
+# =======================================================
+frontend:
+  replicaCount: 1
+  image:
+    repository: 227703472492.dkr.ecr.us-east-1.amazonaws.com/aurafinance-front
+    tag: latest
+    pullPolicy: Always
+  containerPort: 80
+  service:
+    port: 80
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "150m"
+      memory: "128Mi"

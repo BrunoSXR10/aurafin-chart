@@ -1,0 +1,15 @@
+# Kubernetes / Helm Secrets
+*.secrets.yaml
+values-secrets.yaml
+.env
+
+# Helm chart binary dependencies (ArgoCD will download dependencies automatically)
+aurafin-chart/charts/*.tgz
+charts/*.tgz
+.helm/
+
+# OS / Editor files
+.DS_Store
+*.swp
+*~
+

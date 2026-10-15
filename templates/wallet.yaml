@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wallet-service
+  labels:
+    app: wallet-service
+spec:
+  replicas: {{ .Values.wallet.replicaCount }}
+  selector:
+    matchLabels:
+      app: wallet-service
+  template:
+    metadata:
+      labels:
+        app: wallet-service
+    spec:
+      containers:
+      - name: wallet-service
+        image: "{{ .Values.wallet.image.repository }}:{{ .Values.wallet.image.tag }}"
+        imagePullPolicy: {{ .Values.wallet.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.wallet.containerPort }}
+        resources:
+          requests:
+            cpu: {{ .Values.wallet.resources.requests.cpu }}
+            memory: {{ .Values.wallet.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.wallet.resources.limits.cpu }}
+            memory: {{ .Values.wallet.resources.limits.memory }}
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: {{ .Values.wallet.containerPort }}
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.wallet.containerPort }}
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        env:
+        - name: STATEMENT_SERVICE_URL
+          value: "http://statement-service:{{ .Values.statement.service.port }}"
+        - name: DB_HOST
+          value: "postgres-postgresql"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: POSTGRES_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: POSTGRES_PASSWORD
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: POSTGRES_DB
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wallet-service
+spec:
+  selector:
+    app: wallet-service
+  ports:
+  - port: {{ .Values.wallet.service.port }}
+    targetPort: {{ .Values.wallet.containerPort }}
