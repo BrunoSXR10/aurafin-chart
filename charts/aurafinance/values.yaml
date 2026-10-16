@@ -47,14 +47,14 @@ dbSecret:
 # =======================================================
 wallet:
   enabled: true
-  replicaCount: 1
+  replicaCount: 2
   image:
     repository: 227703472492.dkr.ecr.us-east-1.amazonaws.com/wallet-api
     tag: latest
     pullPolicy: Always
   containerPort: 8080
   service:
-    port: 8081
+    port: 8082
   resources:
     requests:
       cpu: "100m"
