@@ -47,7 +47,7 @@ dbSecret:
 # =======================================================
 wallet:
   enabled: true
-  replicaCount: 2
+  replicaCount: 1
   image:
     repository: 227703472492.dkr.ecr.us-east-1.amazonaws.com/wallet-api
     tag: latest
