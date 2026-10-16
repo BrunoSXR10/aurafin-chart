@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: aurafin-statement
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/BrunoSXR10/aurafin-chart.git
+    targetRevision: main
+    path: charts/aurafinance
+    helm:
+      parameters:
+        - name: wallet.enabled
+          value: "false"
+        - name: statement.enabled
+          value: "true"
+        - name: frontend.enabled
+          value: "false"
+        - name: ingress.enabled
+          value: "false"
+        - name: postgresql.enabled
+          value: "false"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: aurafin-test
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
