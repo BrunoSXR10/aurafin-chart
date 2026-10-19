@@ -50,7 +50,7 @@ wallet:
   replicaCount: 1
   image:
     repository: 227703472492.dkr.ecr.us-east-1.amazonaws.com/wallet-api
-    tag: 3b4ab78
+    tag: 3b4ab78cfa5f3b8ee2b3847944031b724502d33f
     pullPolicy: Always
   containerPort: 8080
   service:
@@ -71,7 +71,7 @@ statement:
   replicaCount: 1
   image:
     repository: 227703472492.dkr.ecr.us-east-1.amazonaws.com/statement-api
-    tag: 3b4ab78
+    tag: 3b4ab78cfa5f3b8ee2b3847944031b724502d33f
     pullPolicy: Always
   containerPort: 8080
   service:
@@ -92,7 +92,7 @@ frontend:
   replicaCount: 1
   image:
     repository: 227703472492.dkr.ecr.us-east-1.amazonaws.com/aurafinance-front
-    tag: 3b4ab78
+    tag: 3b4ab78cfa5f3b8ee2b3847944031b724502d33f
     pullPolicy: Always
   containerPort: 80
   service:
