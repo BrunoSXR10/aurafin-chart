@@ -48,7 +48,7 @@ spec:
         - name: STATEMENT_SERVICE_URL
           value: "http://statement-service:{{ .Values.statement.service.port }}"
         - name: DB_HOST
-          value: "postgres-postgresql"
+          value: "postgres-vioglacial"
         - name: DB_PORT
           value: "5432"
         - name: DB_USER
