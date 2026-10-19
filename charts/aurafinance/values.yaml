@@ -50,7 +50,7 @@ wallet:
   replicaCount: 1
   image:
     repository: 227703472492.dkr.ecr.us-east-1.amazonaws.com/wallet-api
-    tag: latest
+    tag: 5c01c0675dc2ff5281d133070f923ca1e6686593
     pullPolicy: Always
   containerPort: 8080
   service:
