@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: audit-temp-config
-  namespace: aurafin-test
-data:
-  env: "test-delete"
