@@ -35,6 +35,12 @@ grafana:
   enabled: true
   adminPassword: "admin" # Troque para a sua senha desejada
   
+  podSecurityContext:
+    fsGroup: 472
+  securityContext:
+    runAsUser: 472
+    runAsGroup: 472
+  
   resources:
     requests:
       cpu: 50m
